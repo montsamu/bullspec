@@ -3,12 +3,19 @@ To use bullpay (production Paypal URLs given; suggest testing with sandbox URLs)
 
 import bullpay
 
-paypal_client = bullpay.PaypalClient("https://www.paypal.com/cgi-bin/webscr", "https://api-3t.paypal.com/nvp", "my_paypal_api_username", "my_paypal_api_password", "my_paypal_signature")
+paypal_client = bullpay.PaypalClient("https://www.paypal.com/cgi-bin/webscr",
+                                     "https://api-3t.paypal.com/nvp",
+                                     "my_paypal_api_username",
+                                     "my_paypal_api_password",
+                                     "my_paypal_signature")
 
 On your order page:
 
 # start the checkout process
-checkout = paypal_client.setExpressCheckout("11.27", "http://my.site.com/order_confirm", "http://my.site.com/order_cancel", {"DESC":"My order description!"})
+checkout = paypal_client.setExpressCheckout("11.27",
+                                     "http://my.site.com/order_confirm",
+                                     "http://my.site.com/order_cancel",
+                                     {"DESC":"My order description!"})
 checkout.put() # the client does not do "puts" -- store this checkout order if you want to retrieve it later
 # redirect to paypal to get express checkout details (shipping address, etc.)
 self.redirect(checkout.url)
