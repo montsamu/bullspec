@@ -1,3 +1,46 @@
+"""
+To use bullpay (production Paypal URLs given; suggest testing with sandbox URLs):
+
+import bullpay
+
+paypal_client = bullpay.PaypalClient("https://www.paypal.com/cgi-bin/webscr", "https://api-3t.paypal.com/nvp", "my_paypal_api_username", "my_paypal_api_password", "my_paypal_signature")
+
+On your order page:
+
+# start the checkout process
+checkout = paypal_client.setExpressCheckout("11.27", "http://my.site.com/order_confirm", "http://my.site.com/order_cancel", {"DESC":"My order description!"})
+checkout.put() # the client does not do "puts" -- store this checkout order if you want to retrieve it later
+# redirect to paypal to get express checkout details (shipping address, etc.)
+self.redirect(checkout.url)
+
+On your order confirmation page (e.g. "/order_confirm"):
+
+# get the Paypal token and payer_id from the request information
+token = self.request.get("token")
+payer_id = self.request.get("PayerID")
+
+# get the checkout details
+details = paypal_client.getExpressCheckoutDetails(token)
+details.put() # again the client does not do "puts" -- store these details if you want to retrieve them later
+
+# send some HTML including a link or button to call the submit code
+self.response.out.write(template.render("my_template_path.html", {"token":token, "payer_id":payer_id}))
+
+In your order submit code:
+
+# get the token, payer_id, and amount (e.g. from passing along form values; storing in the DB; session data; etc.)
+token = self.request.get("token")
+payer_id = self.request.get("payer_id")
+amt = lookup_amount_for_order(token, payer_id) # your code here
+
+# call for payment (this charges the user's Paypal account for the amt)
+payment = paypal_client.doExpressCheckoutPayment(token, payer_id, amt)
+payment.put() # again the client does not do "puts" -- store this payment if you want to retrieve it later
+
+# send some HTML including a "thanks!" and so on
+self.response.out.write(template.render("my_template_path.html", {}))
+
+"""
 
 from google.appengine.api import urlfetch
 from google.appengine.ext import db
