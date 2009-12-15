@@ -15,7 +15,7 @@ On your order page:
 checkout = paypal_client.setExpressCheckout("11.27",
                                      "http://my.site.com/order_confirm",
                                      "http://my.site.com/order_cancel",
-                                     {"DESC":"My order description!"})
+                                     additional_params={"DESC":"My order description!"})
 checkout.put() # the client does not do "puts" -- store this checkout order if you want to retrieve it later
 # redirect to paypal to get express checkout details (shipping address, etc.)
 self.redirect(checkout.url)
@@ -151,7 +151,7 @@ class PaypalClient:
     # TOKEN=EC%2d2HF62213290796006&TIMESTAMP=2009%2d12%2d12T04%3a24%3a11Z&CORRELATIONID=65bdbe3887390&ACK=Success&VERSION=51%2e0&BUILD=1105502
 
     nparams = {"cmd":"_express-checkout", "token":content_dict["TOKEN"]} # , "AMT":amount, "CURRENCYCODE":currency_code, "RETURNURL":return_url, "CANCELURL":cancel_url}
-    logging.info("nparams:", nparams)
+    logging.info("nparams:%s", nparams)
 
     rurl = self.url + "?" + urlencode(nparams)
     logging.info("rurl:%s", rurl)
